@@ -4,6 +4,10 @@ Privacy-preserving credit eligibility for institutional onchain finance.
 
 **Live product:** [primus-credit-rail.vercel.app](https://primus-credit-rail.vercel.app)
 
+![Status](https://img.shields.io/badge/status-community%20prototype-33c7e8)
+![Primus](https://img.shields.io/badge/Primus-zkTLS-ff6b35)
+![License](https://img.shields.io/badge/license-MIT-72e6b3)
+
 ![Privacy × Verification](assets/primus-privacy-verification-banner.png)
 
 ## Why this exists
@@ -41,6 +45,18 @@ This prototype is designed around public Primus concepts and open-source compone
 The production path requires approved data templates, developer credentials and a supported Primus environment. Those are intentionally not bundled in this repository.
 
 The current live proof implementation follows the public BNB ZK ID SDK sequence: initialize an app context, start a provider-specific proof request, surface progress events, and handle attested or failed results. It uses the public test identifiers documented by Primus and is intended as an integration reference until the team provides a production app context.
+
+## Integration status
+
+| Layer | Status |
+| --- | --- |
+| Institutional credit policy UI | Live |
+| Synthetic policy evaluation | Live |
+| Primus BNB ZK ID SDK flow | Integrated with public test context |
+| Production App ID / template | Awaiting Primus approval |
+| Onchain verifier deployment | Planned after template approval |
+
+The project is ready for Primus team feedback and an approved Builder integration. See [the integration request](docs/INTEGRATION_REQUEST.md).
 
 ## Architecture
 
