@@ -24,8 +24,9 @@ The protocol receives the claim it needs—not raw balances, API credentials, or
 - Downloadable demonstration proof JSON
 - Institutional dashboard for credit tier, proof freshness and risk signal
 - Architecture view: source → zkTLS attestation → private computation → verifier → access
+- Live Primus BNB ZK ID proof path using the public `@primuslabs/bnb-zkid-sdk` flow
 
-> The current public sandbox uses synthetic data. It does not request wallet connections, API keys or personal data, and its JSON export is a demonstration artifact—not a cryptographic Primus attestation.
+> The policy sandbox uses synthetic data. The separate **Run a live Primus proof** path uses the public SDK test flow, requires the Primus Extension and a valid EVM address, and does not request a private key. The SDK proof flow may still require a Primus-registered app context and supported provider configuration.
 
 ## Primus integration path
 
@@ -38,6 +39,8 @@ This prototype is designed around public Primus concepts and open-source compone
 - [Proof-of-Reserves docs](https://github.com/primus-labs/PoR-docs)
 
 The production path requires approved data templates, developer credentials and a supported Primus environment. Those are intentionally not bundled in this repository.
+
+The current live proof implementation follows the public BNB ZK ID SDK sequence: initialize an app context, start a provider-specific proof request, surface progress events, and handle attested or failed results. It uses the public test identifiers documented by Primus and is intended as an integration reference until the team provides a production app context.
 
 ## Architecture
 
