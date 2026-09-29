@@ -1,0 +1,11 @@
+{
+  "name": "primus-confidential-credit-rail",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "smoke": "node scripts/smoke-test.mjs"
+  },
+  "dependencies": {
+    "@primuslabs/network-js-sdk": "latest"
+  }
+}

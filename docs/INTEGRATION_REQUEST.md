@@ -4,6 +4,8 @@
 
 Primus Confidential Credit Rail is an independent community prototype for privacy-preserving institutional credit policies. It provides a live UI, a synthetic policy sandbox, and a public BNB ZK ID SDK flow.
 
+Review packet: [docs/BUILDER_REVIEW.md](./BUILDER_REVIEW.md)
+
 ## Requested guidance
 
 We are looking for the recommended path to:
@@ -29,3 +31,5 @@ The application should receive only the policy result. It must not persist API c
 - Live demo: https://primus-credit-rail.vercel.app
 - Repository: https://github.com/vlsss12/primus-confidential-credit-rail
 - Primus BNB ZKID SDK: https://github.com/primus-labs/BNB-ZKID-SDK
+- Primus Developer Hub: https://dev.primuslabs.xyz/
+- Builder support context: ask Primus team in the official Discord `builders-help` or an opened support ticket

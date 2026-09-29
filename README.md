@@ -41,10 +41,16 @@ This prototype is designed around public Primus concepts and open-source compone
 - [zkTLS contracts](https://github.com/primus-labs/zktls-contracts)
 - [BNB ZKID SDK](https://github.com/primus-labs/BNB-ZKID-SDK)
 - [Proof-of-Reserves docs](https://github.com/primus-labs/PoR-docs)
+- [zkTLS Playground](https://primus-zktls-playground.vercel.app/)
+- [Primus documentation](https://docs.primuslabs.xyz/)
 
 The production path requires approved data templates, developer credentials and a supported Primus environment. Those are intentionally not bundled in this repository.
 
+The site now links directly to the official zkTLS Playground and the Primus reference examples. The Playground is useful for validating request logic, but it is explicitly a simulation environment; it does not replace an approved App ID, template or server-side integration.
+
 The current live proof implementation follows the public BNB ZK ID SDK sequence: initialize an app context, start a provider-specific proof request, surface progress events, and handle attested or failed results. It uses the public test identifiers documented by Primus and is intended as an integration reference until the team provides a production app context.
+
+The repository also includes a Network-JS-SDK adapter at `src/primus-network.js`. It follows the official flow (`init` → `submitTask` → `attest` → `verifyAndPollTaskResult`) and supports Base Sepolia (`84532`) and Base mainnet (`8453`). It intentionally refuses to run without an approved Template ID; no guessed template or secret is included.
 
 ## Integration status
 
@@ -53,10 +59,11 @@ The current live proof implementation follows the public BNB ZK ID SDK sequence:
 | Institutional credit policy UI | Live |
 | Synthetic policy evaluation | Live |
 | Primus BNB ZK ID SDK flow | Integrated with public test context |
-| Production App ID / template | Awaiting Primus approval |
+| Primus Network-JS-SDK adapter | Configured with published Binance volume and KYC template IDs |
+| Production App ID / template | Awaiting Primus team confirmation for this community project |
 | Onchain verifier deployment | Planned after template approval |
 
-The project is ready for Primus team feedback and an approved Builder integration. See [the integration request](docs/INTEGRATION_REQUEST.md).
+The project is ready for Primus team feedback and an approved Builder integration. See the [Builder review packet](docs/BUILDER_REVIEW.md) and [integration request](docs/INTEGRATION_REQUEST.md).
 
 ## Architecture
 
@@ -66,11 +73,27 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the proposed proof lifecy
 
 - [x] Public institutional UI and policy sandbox
 - [x] Synthetic proof export with explicit disclosure
-- [ ] Replace synthetic sources with approved Primus templates
+- [x] Configure the published Binance 30-day spot volume template
+- [x] Configure the published Binance KYC status template
+- [ ] Replace synthetic policy output with the verified attestation result
 - [ ] Add wallet signature and proof-request lifecycle
 - [ ] Deploy a minimal verifier contract on a supported testnet
 - [ ] Add policy versioning, expiry and revocation
 - [ ] Add reproducible integration tests with no raw-data persistence
+
+## Builder review checklist
+
+The project is requesting recognition as an independent community Builder contribution. The following items are intentionally explicit for review:
+
+- [x] Public GitHub repository and live demo
+- [x] Official Primus Network-JS-SDK path in the codebase
+- [x] Official Binance volume and KYC template IDs configured
+- [x] User-side proof flow requiring the Primus Extension and wallet confirmation
+- [x] No private key, API key, App Secret or raw attestation is committed or logged
+- [ ] Primus team confirms the production App ID and approved workflow
+- [ ] Primus team confirms Builder role or contribution eligibility
+
+Builder role, points and token rewards are not guaranteed by this repository; they require explicit confirmation from Primus.
 
 ## Local run
 
