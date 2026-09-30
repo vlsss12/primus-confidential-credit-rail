@@ -45,6 +45,25 @@ if (foundUnsafeLogging.length) {
   process.exit(1);
 }
 
+const sourceFiles = [html, adapter].join('\n');
+const secretPatterns = [
+  /PRIMUS_APP_SECRET\s*=\s*[^\s#]/i,
+  /(?:private[_ -]?key|seed phrase|mnemonic)\s*[:=]\s*['\"][^'\"]+['\"]/i,
+  /sk-[A-Za-z0-9]{20,}/,
+];
+if (secretPatterns.some((pattern) => pattern.test(sourceFiles))) {
+  console.error('Smoke test failed. Secret-like material found in browser sources.');
+  process.exit(1);
+}
+
+const vercelConfig = await readFile(resolve(process.cwd(), 'vercel.json'), 'utf8');
+for (const header of ['X-Content-Type-Options', 'X-Frame-Options', 'Content-Security-Policy', 'Permissions-Policy']) {
+  if (!vercelConfig.includes(header)) {
+    console.error(`Smoke test failed. Missing security header: ${header}`);
+    process.exit(1);
+  }
+}
+
 for (const requiredDoc of ['docs/BUILDER_REVIEW.md', 'docs/INTEGRATION_REQUEST.md']) {
   try {
     await readFile(resolve(process.cwd(), requiredDoc), 'utf8');
