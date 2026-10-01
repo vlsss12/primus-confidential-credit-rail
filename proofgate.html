@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="ProofGate by VLS — request-bound Primus source attestations, independently checked on Base Sepolia.">
+  <title>ProofGate · Private evidence. Explicit trust.</title>
+  <link rel="stylesheet" href="/assets/proofgate.css">
+  <script type="importmap">{"imports":{"@primuslabs/network-js-sdk":"https://esm.sh/@primuslabs/network-js-sdk@0.1.11"}}</script>
+  <script type="module" src="/src/proofgate-ui.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <header><a class="brand" href="/">◇ <span>VLS / PROOFGATE</span></a><span class="pill">Base Sepolia · testnet</span></header>
+    <section class="hero">
+      <div class="eyebrow">A community-built Primus integration</div>
+      <h1>Private evidence.<br><span>Explicit trust.</span></h1>
+      <p>One request. One wallet. One verifiable source receipt.<br>Built for apps that need evidence, not another financial profile.</p>
+      <div class="hero-meta"><span>01 / Consent</span><span>02 / Attest</span><span>03 / Verify</span></div>
+    </section>
+    <section class="workspace">
+      <article class="panel">
+        <div class="heading"><h2>Request a source receipt</h2><span class="pill" id="availability">Checking setup…</span></div>
+        <p class="muted">Choose the consumer this proof belongs to.</p>
+        <label for="audience">Consumer</label>
+        <select id="audience"><option value="credit-rail">Credit Rail · source verification</option><option value="partner-preview">Partner Preview · integration reference</option></select>
+        <dl class="policy"><div><dt>Source template</dt><dd>Binance KYC Status</dd></div><div><dt>Acceptance rule</dt><dd>Fully successful, request-bound attestation</dd></div><div><dt>Validity</dt><dd>15-minute request window</dd></div><div><dt>Replay protection</dt><dd>Single-use server nonce</dd></div></dl>
+        <div class="notice">This checks that the selected template produced a source attestation. It does <strong>not</strong> interpret its data as KYC approval, financial eligibility, or a credit score.</div>
+        <label class="consent"><input id="consent" type="checkbox"><span>I understand this submits a Base Sepolia transaction and may spend test ETH. Primus and its attestors process the proof; the app reads the onchain result. Onchain data may be public.</span></label>
+        <button id="start" disabled>Request & verify →</button>
+        <p class="fine">Requires an EVM wallet, Primus Extension and testnet gas. Never enter a private key or account password into this site.</p>
+      </article>
+      <article class="panel result-panel" aria-live="polite">
+        <div class="heading"><h2>Verification receipt</h2><span class="pill" id="state">Not issued</span></div>
+        <div class="orb" aria-hidden="true">◇</div>
+        <h3 id="title">Evidence before access.</h3>
+        <p class="muted" id="status">No synthetic pass. A receipt appears only after the server checks confirmed Primus contract state and consumes the request nonce.</p>
+        <dl class="policy" id="receipt" hidden></dl>
+        <button id="download" class="secondary" hidden>Download receipt</button>
+        <p class="fine">A downloaded JSON receipt is an informational record, not a signed access token. A relying app must run its own server verification and policy.</p>
+      </article>
+    </section>
+    <section class="panel developer">
+      <div class="eyebrow">Composable by design</div><h2>Same verifier. Separate consumers.</h2>
+      <p class="muted">Credit Rail is the first consumer. Partner Preview demonstrates audience isolation using the same server verifier — not a second application deployment.</p>
+      <pre><code>import { requestSourceReceipt } from './src/proofgate-client.js';
+
+const receipt = await requestSourceReceipt({
+  audience: 'credit-rail',
+  onStatus: showProgress
+});
+// Apply your server-side policy. Never trust a client boolean.</code></pre>
+      <p class="fine">Reference client for this origin. Cross-origin embedding, access grants, financial policy evaluation and production-chain support are not enabled.</p>
+      <div class="links"><a href="https://github.com/vlsss12/primus-confidential-credit-rail" target="_blank" rel="noopener noreferrer">Review the source ↗</a><a href="/">Back to Credit Rail →</a></div>
+    </section>
+    <footer>Independent implementation by VLS. Not an official Primus product or endorsement. Source attestation ≠ credit approval.</footer>
+  </main>
+</body>
+</html>

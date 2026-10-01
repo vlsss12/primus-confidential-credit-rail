@@ -1,6 +1,6 @@
 # Primus Confidential Credit Rail
 
-Privacy-preserving credit eligibility for institutional onchain finance.
+An independent Primus zkTLS integration prototype and experimental credit-policy sandbox.
 
 **Live product:** [primus-credit-rail.vercel.app](https://primus-credit-rail.vercel.app)
 
@@ -18,7 +18,7 @@ Institutional DeFi needs to verify eligibility without collecting a complete fin
 KYC verified · 30D volume > $1M · collateral ratio > 150%
 ```
 
-The protocol receives the claim it needs—not raw balances, API credentials, or account-level history.
+This is the intended policy design, not a claim that the current prototype proves credit eligibility. The policy sandbox uses synthetic inputs. ProofGate verifies source-attestation provenance only and does not interpret KYC status, balances or trading volume for access decisions.
 
 ## Current product
 
@@ -60,10 +60,14 @@ The repository also includes a Network-JS-SDK adapter at `src/primus-network.js`
 | Synthetic policy evaluation | Live |
 | Primus BNB ZK ID SDK flow | Integrated with public test context |
 | Primus Network-JS-SDK adapter | Configured with published Binance volume and KYC template IDs |
+| ProofGate server-side verifier | Implemented; 40 fixture-based tests passed on 2026-10-02 |
+| ProofGate live end-to-end test | Configuration and Redis-backed challenge issuance passed on 2026-10-02; owner-authorized attestation/receipt test pending |
 | Production App ID / template | Awaiting Primus team confirmation for this community project |
 | Onchain verifier deployment | Planned after template approval |
 
 The project is ready for Primus team feedback and an approved Builder integration. See the [Builder review packet](docs/BUILDER_REVIEW.md) and [integration request](docs/INTEGRATION_REQUEST.md).
+
+This is a **zkTLS**, not a zkFHE computing-network integration. General developer-incentive language in zkFHE network documentation is not evidence that this project earns XP, tokens or Builder recognition. Track live validation separately in [the test record](docs/LIVE_TEST_RECORD.md).
 
 ## Architecture
 
@@ -112,3 +116,6 @@ This is an independent community prototype. It is not an official Primus Labs pr
 ## License
 
 MIT — see [`LICENSE`](LICENSE).
+# ProofGate
+
+The new [ProofGate workflow](docs/PROOFGATE.md) at `/proofgate.html` adds server-side, wallet/request-bound source attestation receipts with durable replay protection. Base Sepolia only; server configuration and a real owner-authorized end-to-end test are still required. It does not grant KYC/credit approval or claim Primus endorsement. Run `npm test` for verifier security tests.

@@ -3,9 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "smoke": "node scripts/smoke-test.mjs"
+    "smoke": "node scripts/smoke-test.mjs",
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
-    "@primuslabs/network-js-sdk": "latest"
+    "@primuslabs/network-js-sdk": "0.1.11",
+    "ethers": "6.17.0"
   }
 }
