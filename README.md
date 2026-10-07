@@ -1,8 +1,10 @@
 # Primus Confidential Credit Rail
 
-An independent Primus zkTLS integration prototype and experimental credit-policy sandbox.
+An independent, open-source prototype exploring how DeFi applications can verify narrow eligibility claims without collecting a user's full financial profile. It combines Primus zkTLS source-attestation flows, a request-bound testnet verifier, and a versioned credit-policy workbench.
 
-**Live product:** [primus-credit-rail.vercel.app](https://primus-credit-rail.vercel.app)
+> **Project status:** community prototype. Credit Gate currently compiles policy configuration; it does not run a DVC/zkVM proof or make a real credit decision. ProofGate verifies source-attestation provenance only and is not a credit/KYC authorization token.
+
+**Live app:** [primus-credit-rail.vercel.app](https://primus-credit-rail.vercel.app/) · **Credit Gate:** [Policy Lab](https://primus-credit-rail.vercel.app/credit-gate.html) · **ProofGate:** [Request-bound verifier](https://primus-credit-rail.vercel.app/proofgate.html)
 
 ![Status](https://img.shields.io/badge/status-community%20prototype-33c7e8)
 ![Primus](https://img.shields.io/badge/Primus-zkTLS-ff6b35)
@@ -10,112 +12,106 @@ An independent Primus zkTLS integration prototype and experimental credit-policy
 
 ![Privacy × Verification](assets/primus-privacy-verification-banner.png)
 
-## Why this exists
+## Product capabilities
 
-Institutional DeFi needs to verify eligibility without collecting a complete financial profile. Credit Rail is a product prototype for turning private Web2 and onchain signals into selective-disclosure claims:
+### Credit Gate · DVC Policy Lab
+
+- Configure a versioned eligibility rule using the published Binance 30-day spot-volume template.
+- Bind the policy to a denomination, target chain, subject requirement, expiry window, and minimal-disclosure output.
+- Compile a deterministic policy JSON and calculate its SHA-256 configuration digest in the browser.
+- Download the policy manifest for review and future verifier implementation.
+- See the DVC execution prerequisites and current integration status directly in the UI.
+
+The policy digest commits to configuration; it is **not** a zk proof, attestation, signed receipt, or authorization. The page does not connect a wallet, call Binance, submit a Primus task, or transmit policy data. See [DVC Policy Lab notes](docs/DVC_POLICY_LAB.md).
+
+### ProofGate · request-bound source verification
+
+- Issues a short-lived challenge bound to a wallet, consumer, template, origin, and expiry.
+- Verifies a wallet signature and checks the confirmed Primus task state against the expected wallet, template, attestors, recipients, and request binding.
+- Consumes the nonce atomically in Redis to reject replayed submissions.
+- Fails closed on invalid bindings, expiry, incomplete attestor results, RPC errors, and replay-store failures.
+- Returns a minimal informational receipt; it does not grant access or interpret the attestation's financial/KYC data.
+
+ProofGate is Base Sepolia only. It needs server-side configuration; the project still needs a fresh owner-authorized live attestation/receipt and replay validation before claiming full live end-to-end success. Details: [ProofGate design and setup](docs/PROOFGATE.md).
+
+### Primus proof flows and onboarding
+
+- Public Primus BNB ZK ID SDK reference flow, with progress and failure states.
+- Network-JS-SDK adapter for the documented task lifecycle (`init → submitTask → attest → verifyAndPollTaskResult`).
+- UI entry points for the published Binance 30-day volume and KYC-status templates.
+- Railbot getting-started guide on the home page and Credit Gate page.
+- Synthetic policy sandbox and downloadable demo JSON, explicitly labeled as illustrative.
+
+The Primus Extension, connected wallet, supported network, and any required testnet gas are user-controlled prerequisites for wallet flows. The app must never ask for a wallet private key, Binance password, or recovery phrase.
+
+## Architecture and boundaries
 
 ```text
-KYC verified · 30D volume > $1M · collateral ratio > 150%
+Primus source attestation ──> ProofGate checks task/request provenance ──> minimal informational receipt
+
+Credit Gate policy form ──> canonical policy JSON + SHA-256 digest ──> downloadable configuration
+                                      │
+                                      └──> DVC/zkVM execution is not connected yet
 ```
 
-This is the intended policy design, not a claim that the current prototype proves credit eligibility. The policy sandbox uses synthetic inputs. ProofGate verifies source-attestation provenance only and does not interpret KYC status, balances or trading volume for access decisions.
+The intended future application is to verify the Primus attestation inside an external DVC program, bind it to the policy digest and request context, compute eligibility privately, then disclose only the required boolean claim. That path requires an approved app/template context, a verifier program that validates the Primus signature/source URL/data hash, a configured prover service, and a target-chain verifier. See [architecture](docs/ARCHITECTURE.md) and [Builder review packet](docs/BUILDER_REVIEW.md).
 
-## Current product
-
-- Interactive policy sandbox with pass/fail evaluation
-- Synthetic credit posture and selective-disclosure source model
-- Configurable trading-volume, collateral and KYC policy inputs
-- Downloadable demonstration proof JSON
-- Institutional dashboard for credit tier, proof freshness and risk signal
-- Architecture view: source → zkTLS attestation → private computation → verifier → access
-- Live Primus BNB ZK ID proof path using the public `@primuslabs/bnb-zkid-sdk` flow
-
-> The policy sandbox uses synthetic data. The separate **Run a live Primus proof** path uses the public SDK test flow, requires the Primus Extension and a valid EVM address, and does not request a private key. The SDK proof flow may still require a Primus-registered app context and supported provider configuration.
-
-## Primus integration path
-
-This prototype is designed around public Primus concepts and open-source components:
-
-- [Primus GitHub organization](https://github.com/primus-labs)
-- [zkTLS tutorial](https://github.com/primus-labs/zkTLS-tutorial)
-- [zkTLS contracts](https://github.com/primus-labs/zktls-contracts)
-- [BNB ZKID SDK](https://github.com/primus-labs/BNB-ZKID-SDK)
-- [Proof-of-Reserves docs](https://github.com/primus-labs/PoR-docs)
-- [zkTLS Playground](https://primus-zktls-playground.vercel.app/)
-- [Primus documentation](https://docs.primuslabs.xyz/)
-
-The production path requires approved data templates, developer credentials and a supported Primus environment. Those are intentionally not bundled in this repository.
-
-The site now links directly to the official zkTLS Playground and the Primus reference examples. The Playground is useful for validating request logic, but it is explicitly a simulation environment; it does not replace an approved App ID, template or server-side integration.
-
-The current live proof implementation follows the public BNB ZK ID SDK sequence: initialize an app context, start a provider-specific proof request, surface progress events, and handle attested or failed results. It uses the public test identifiers documented by Primus and is intended as an integration reference until the team provides a production app context.
-
-The repository also includes a Network-JS-SDK adapter at `src/primus-network.js`. It follows the official flow (`init` → `submitTask` → `attest` → `verifyAndPollTaskResult`) and supports Base Sepolia (`84532`) and Base mainnet (`8453`). It intentionally refuses to run without an approved Template ID; no guessed template or secret is included.
+**Privacy note:** this project does not submit raw attestation bodies or API credentials to its own ProofGate API. Primus SDK/extension, attestors, and onchain storage have their own disclosure properties; do not assume every attestation field is private.
 
 ## Integration status
 
-| Layer | Status |
+| Capability | Status |
 | --- | --- |
-| Institutional credit policy UI | Live |
-| Synthetic policy evaluation | Live |
-| Primus BNB ZK ID SDK flow | Integrated with public test context |
-| Primus Network-JS-SDK adapter | Configured with published Binance volume and KYC template IDs |
-| ProofGate server-side verifier | Implemented; 40 fixture-based tests passed on 2026-10-02 |
-| ProofGate live end-to-end test | Configuration and Redis-backed challenge issuance passed on 2026-10-02; owner-authorized attestation/receipt test pending |
-| Production App ID / template | Awaiting Primus team confirmation for this community project |
-| Onchain verifier deployment | Planned after template approval |
+| Public product UI and Railbot guide | Live |
+| Synthetic policy sandbox | Implemented; illustrative only |
+| Credit Gate policy JSON + SHA-256 digest | Implemented in browser |
+| Primus BNB ZK ID flow | Integrated with public test context |
+| Network-JS-SDK adapter | Implemented; Base Sepolia/Base chain checks |
+| Binance volume and KYC template entry points | Implemented with public template IDs; validate suitability with Primus |
+| ProofGate server verifier and durable replay protection | Implemented; Base Sepolia, server configuration required |
+| Owner-authorized live ProofGate receipt + replay check | Pending |
+| Production App ID/template confirmation | Pending Primus team guidance |
+| DVC/zkVM prover and onchain eligibility verifier | Not implemented |
 
-The project is ready for Primus team feedback and an approved Builder integration. See the [Builder review packet](docs/BUILDER_REVIEW.md) and [integration request](docs/INTEGRATION_REQUEST.md).
+This is a **zkTLS** integration prototype, not a zkFHE computation-network integration. General incentive language elsewhere does not establish XP, token, Builder-role, or airdrop eligibility. No reward is promised by this repository.
 
-This is a **zkTLS**, not a zkFHE computing-network integration. General developer-incentive language in zkFHE network documentation is not evidence that this project earns XP, tokens or Builder recognition. Track live validation separately in [the test record](docs/LIVE_TEST_RECORD.md).
+## Run locally
 
-## Architecture
-
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the proposed proof lifecycle, privacy boundaries and production hardening plan.
-
-## Roadmap
-
-- [x] Public institutional UI and policy sandbox
-- [x] Synthetic proof export with explicit disclosure
-- [x] Configure the published Binance 30-day spot volume template
-- [x] Configure the published Binance KYC status template
-- [ ] Replace synthetic policy output with the verified attestation result
-- [ ] Add wallet signature and proof-request lifecycle
-- [ ] Deploy a minimal verifier contract on a supported testnet
-- [ ] Add policy versioning, expiry and revocation
-- [ ] Add reproducible integration tests with no raw-data persistence
-
-## Builder review checklist
-
-The project is requesting recognition as an independent community Builder contribution. The following items are intentionally explicit for review:
-
-- [x] Public GitHub repository and live demo
-- [x] Official Primus Network-JS-SDK path in the codebase
-- [x] Official Binance volume and KYC template IDs configured
-- [x] User-side proof flow requiring the Primus Extension and wallet confirmation
-- [x] No private key, API key, App Secret or raw attestation is committed or logged
-- [ ] Primus team confirms the production App ID and approved workflow
-- [ ] Primus team confirms Builder role or contribution eligibility
-
-Builder role, points and token rewards are not guaranteed by this repository; they require explicit confirmation from Primus.
-
-## Local run
-
-This is a zero-build static prototype. Open `index.html` directly or serve the folder with any static web server:
+The public UI is static, but ProofGate's API routes require Vercel's local runtime and server-only environment variables.
 
 ```bash
-python3 -m http.server 8080
+npm install
+npx vercel dev
 ```
 
-Then visit `http://localhost:8080`.
+Open the local URL printed by Vercel, then visit `/`, `/credit-gate.html`, or `/proofgate.html`. A plain static server can display the UI but cannot serve the ProofGate API. See [ProofGate setup](docs/PROOFGATE.md) for the required environment variables. Never commit `.env` files, private keys, API keys, or App Secrets.
 
-## Important disclosure
+## Project map
 
-This is an independent community prototype. It is not an official Primus Labs product, partnership, grant application or token-reward guarantee. Primus names and links are used only to identify the intended integration surface.
+```text
+index.html                 Main product page and Primus proof entry points
+credit-gate.html           Policy compiler and DVC readiness guide
+proofgate.html             Wallet/request-bound source verification UI
+api/proofgate.js           Same-origin challenge and verification endpoint
+lib/proofgate.js           Server-side verification and replay protection
+src/primus-network.js      Primus Network-JS-SDK adapter
+src/proofgate-*.js         ProofGate client, protocol, and UI logic
+docs/                      Architecture, security, setup, and review notes
+```
+
+## Primus references
+
+- [Primus Labs GitHub](https://github.com/primus-labs)
+- [Primus documentation](https://docs.primuslabs.xyz/)
+- [zkTLS Playground](https://primus-zktls-playground.vercel.app/)
+- [Primus DVC architecture](https://github.com/primus-labs/DVC-Intro)
+- [Primus DVC demo](https://github.com/primus-labs/DVC-Demo)
+- [BNB ZK ID SDK](https://github.com/primus-labs/BNB-ZKID-SDK)
+
+## Project status and recognition
+
+This is an independent community project, not an official Primus Labs product or endorsed integration. The project is open to technical review and guidance on approved app/template setup. Builder recognition, XP, token rewards, and airdrop allocation depend on criteria set by Primus and are not guaranteed here.
 
 ## License
 
 MIT — see [`LICENSE`](LICENSE).
-# ProofGate
-
-The new [ProofGate workflow](docs/PROOFGATE.md) at `/proofgate.html` adds server-side, wallet/request-bound source attestation receipts with durable replay protection. Base Sepolia only; server configuration and a real owner-authorized end-to-end test are still required. It does not grant KYC/credit approval or claim Primus endorsement. Run `npm test` for verifier security tests.
