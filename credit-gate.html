@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Configure and export a versioned privacy-preserving credit eligibility policy." />
+  <meta name="theme-color" content="#07111f" />
+  <title>Credit Gate Policy Lab | Primus Credit Rail</title>
+  <style>
+    :root{color-scheme:dark;--bg:#07111f;--panel:#0d1b2c;--panel2:#10243a;--line:#203a55;--text:#edf6ff;--muted:#8ca8c2;--cyan:#5de4ff;--green:#72e6b3;--amber:#ffd27d;--red:#ff8e9f}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 84% -10%,#173f61 0,#07111f 43%);color:var(--text);font:14px Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,a,input,select{font:inherit}a{color:inherit;text-decoration:none}.shell{max-width:1200px;margin:auto;padding:26px 28px 42px}.top{display:flex;justify-content:space-between;align-items:center;padding:0 0 18px;border-bottom:1px solid var(--line)}.brand{font-weight:750;letter-spacing:.07em}.top a{color:var(--cyan);font-size:13px}.hero{padding:48px 0 32px}.eyebrow{color:var(--cyan);text-transform:uppercase;letter-spacing:.16em;font-size:11px;font-weight:750}.hero h1{font-size:clamp(36px,6vw,58px);line-height:1;letter-spacing:-.05em;margin:12px 0}.hero p{max-width:760px;color:var(--muted);font-size:16px;line-height:1.65;margin:0}.notice{margin-top:22px;padding:15px 17px;border:1px solid #ffd27d55;background:#ffd27d0d;border-radius:13px;color:#f5dba8;line-height:1.55}.notice strong{color:var(--amber)}.layout{display:grid;grid-template-columns:1.1fr .9fr;gap:17px}.card{background:linear-gradient(145deg,#0e2033,#0a1727);border:1px solid var(--line);border-radius:17px;padding:22px;box-shadow:0 18px 70px #0002}.card h2{font-size:18px;margin:0 0 5px}.sub{color:var(--muted);font-size:12px;line-height:1.55;margin:0 0 19px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:11px;color:var(--muted)}input,select{background:#081525;border:1px solid var(--line);border-radius:9px;padding:11px 12px;color:var(--text);width:100%;outline:none}input:focus,select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #5de4ff18}.hint{font-size:10px;color:#7894ae;line-height:1.45}.check{display:flex;gap:9px;align-items:flex-start;color:var(--muted);font-size:12px;line-height:1.5}.check input{width:auto;margin-top:2px;accent-color:#5de4ff}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}.btn{border:1px solid var(--line);background:#112942;padding:10px 14px;border-radius:9px;color:var(--text);font-weight:650;cursor:pointer}.btn.primary{background:linear-gradient(100deg,#42cfee,#75e5b3);border:0;color:#061522}.btn:hover{filter:brightness(1.1)}.btn:focus-visible,a:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.state{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid #183149;gap:12px}.state:last-child{border-bottom:0}.state strong{font-size:12px}.pill{font-size:10px;padding:5px 8px;border-radius:99px;white-space:nowrap}.pending{color:var(--amber);background:#ffd27d14;border:1px solid #ffd27d44}.ready{color:var(--green);background:#72e6b314;border:1px solid #72e6b344}.hashbox{margin-top:13px;padding:12px;border:1px solid var(--line);background:#081525;border-radius:10px}.hashbox label{display:block;font-size:10px;color:var(--muted);margin-bottom:7px}.hash{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all;color:var(--cyan);line-height:1.55}.output{margin-top:14px;white-space:pre-wrap;word-break:break-word;font:11px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:#c5d9ec;background:#07111f;border:1px solid var(--line);border-radius:10px;padding:13px;max-height:310px;overflow:auto}.callout{font-size:11px;line-height:1.55;color:var(--muted);margin:14px 0 0}.footer{margin-top:24px;color:var(--muted);font-size:11px;line-height:1.6}.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:820px){.layout{grid-template-columns:1fr}.shell{padding:20px 16px 32px}.hero{padding:38px 0 26px}}@media(max-width:480px){.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.top{align-items:flex-start;gap:12px}.card{padding:18px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="top"><a class="brand" href="/">PRIMUS / CREDIT RAIL</a><a href="/">← Back to overview</a></header>
+    <section class="hero"><div class="eyebrow">Policy compiler · DVC integration workbench</div><h1>Credit Gate</h1><p>Define the exact rule a future verifier should enforce. The policy is canonicalized, versioned and hashed so an attestation and its private computation can be bound to the same rule.</p><div class="notice"><strong>Honest status:</strong> this page compiles policy configuration only. It does not run a Primus DVC job, create a zkVM proof, or make a real credit decision. Live execution needs the approved Primus template/app context and a configured DVC prover/verifier.</div></section>
+    <section class="layout" aria-label="Policy configuration and DVC readiness">
+      <article class="card"><h2>Eligibility policy</h2><p class="sub">Start with a single source claim. Use a conservative, explicit threshold and disclose only the boolean outcome.</p>
+        <form id="policyForm">
+          <div class="fields">
+            <div class="field full"><label for="name">Policy name</label><input id="name" maxlength="64" value="Institutional volume gate" required /></div>
+            <div class="field"><label for="version">Policy version</label><input id="version" value="1.0.0" maxlength="20" pattern="[0-9]+\.[0-9]+\.[0-9]+" required /><span class="hint">Semantic version, e.g. 1.0.0</span></div>
+            <div class="field"><label for="source">Attested source</label><select id="source"><option value="binance_spot_volume_30d">Binance · 30-day spot volume</option></select><span class="hint">Published template; use only if appropriate for your app.</span></div>
+            <div class="field"><label for="threshold">Minimum 30-day volume</label><input id="threshold" type="number" min="0" max="1000000000000" step="1" value="1000000" inputmode="numeric" required /><span class="hint">Threshold is policy input, not a reported user balance.</span></div>
+            <div class="field"><label for="currency">Denomination</label><select id="currency"><option>USDT</option><option>USDC</option></select></div>
+            <div class="field"><label for="chain">Target chain ID</label><select id="chain"><option value="84532">Base Sepolia · 84532</option><option value="8453">Base · 8453</option></select><span class="hint">The verifier should reject proofs bound to another chain.</span></div>
+            <div class="field"><label for="expiry">Proof validity window</label><select id="expiry"><option value="900">15 minutes</option><option value="3600">1 hour</option><option value="86400">24 hours</option></select></div>
+            <div class="field full"><span class="hint">Disclosure is fixed to the minimal claim: eligible: true/false only. Exact volume, account identifier and raw response are excluded.</span></div>
+          </div>
+          <div class="actions"><button class="btn primary" type="submit">Compile policy + hash</button><button class="btn" id="download" type="button" disabled>Download policy JSON</button></div>
+        </form>
+        <div class="hashbox"><label>SHA-256 commitment · over canonical policy JSON</label><div id="hash" class="hash" aria-live="polite">Compile the policy to calculate its digest.</div></div>
+        <pre id="output" class="output" aria-label="Compiled policy JSON">Policy JSON will appear here.</pre>
+      </article>
+      <aside>
+        <article class="card"><h2>DVC execution readiness</h2><p class="sub">These are real prerequisites for private computation, not decorative pipeline steps.</p>
+          <div class="state"><strong>Policy schema + version commitment</strong><span class="pill ready">AVAILABLE</span></div>
+          <div class="state"><strong>Primus attestation signature / URL / data-hash verifier</strong><span class="pill pending">DVC PROGRAM</span></div>
+          <div class="state"><strong>Business rule inside zkVM program</strong><span class="pill pending">NOT CONNECTED</span></div>
+          <div class="state"><strong>TEE / zkVM prover endpoint</strong><span class="pill pending">NOT CONFIGURED</span></div>
+          <div class="state"><strong>Onchain proof verifier + replay policy</strong><span class="pill pending">NOT DEPLOYED</span></div>
+          <p class="callout">A safe DVC program must verify the Primus attestation and bind its signature, requested URL, response/data hash, policy digest, chain, expiry and recipient before evaluating the threshold. This browser page cannot substitute for those checks.</p>
+        </article>
+        <article class="card" style="margin-top:17px"><h2>Verifier output contract</h2><p class="sub">Minimal intended public result; private source fields stay inside the DVC computation.</p><pre class="output">{
+  "policyHash": "sha256:…",
+  "eligible": true,
+  "chainId": 84532,
+  "subject": "0x…",
+  "expiresAt": 0,
+  "proofSystem": "pending"
+}</pre><p class="callout">Until a real DVC proof is produced and independently verified, this output is only a schema example—not a receipt or authorization token.</p></article>
+      </aside>
+    </section>
+    <footer class="footer">No wallet, Binance account, API key, raw financial data, or attestation is requested or transmitted by this policy compiler. SHA-256 identifies the policy configuration; it is not itself a zero-knowledge proof.<br /><a href="https://github.com/primus-labs/DVC-Intro" target="_blank" rel="noopener noreferrer" style="color:var(--cyan)">Primus DVC architecture ↗</a> · <a href="https://github.com/primus-labs/DVC-Demo" target="_blank" rel="noopener noreferrer" style="color:var(--cyan)">Official DVC demo ↗</a></footer>
+  </main>
+  <div id="announcement" class="sr" role="status" aria-live="polite"></div>
+  <script>
+    const form=document.getElementById('policyForm');let compiled=null;
+    const sortRecursively=value=>Array.isArray(value)?value.map(sortRecursively):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,sortRecursively(value[key])])):value;
+    const canonicalize=value=>JSON.stringify(sortRecursively(value));
+    function policyFromForm(){const name=document.getElementById('name').value.trim();const version=document.getElementById('version').value.trim();const threshold=document.getElementById('threshold').value;const chainId=Number(document.getElementById('chain').value);const expiresInSeconds=Number(document.getElementById('expiry').value);if(!name||name.length>64)throw Error('Enter a policy name up to 64 characters.');if(!/^\d+\.\d+\.\d+$/.test(version))throw Error('Version must use numeric semantic version format, such as 1.0.0.');if(threshold===''||!Number.isSafeInteger(Number(threshold))||Number(threshold)<0)throw Error('Enter a whole-number volume threshold.');return {schema:'primus-credit-gate-policy/v1',name,version,source:{provider:'binance',claim:'spot_trade_volume_30d',templateId:'ad7d29c8-d820-495a-8bf1-02b8f236a1ae',denomination:document.getElementById('currency').value},rule:{field:'spot_trade_volume_30d',operator:'>=',threshold:Number(threshold)},disclosure:{eligibleOnly:true,discloseExactValue:false,discloseRawResponse:false},binding:{chainId,expiresInSeconds,subjectRequired:true,policyHashRequired:true},execution:{mode:'primus-dvc-zkvm',status:'configuration-only-no-proof-generated'}}}
+    form.addEventListener('submit',async event=>{event.preventDefault();const button=form.querySelector('button[type="submit"]');button.disabled=true;try{const policy=policyFromForm();const bytes=new TextEncoder().encode(canonicalize(policy));if(!globalThis.crypto?.subtle)throw Error('Secure-context Web Crypto is required to calculate the policy hash. Open this page on HTTPS or localhost.');const digest=await crypto.subtle.digest('SHA-256',bytes);const hex=[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join('');compiled={...policy,policyHash:'sha256:'+hex};document.getElementById('hash').textContent=compiled.policyHash;document.getElementById('output').textContent=JSON.stringify(compiled,null,2);document.getElementById('download').disabled=false;document.getElementById('announcement').textContent='Policy compiled and hash calculated. This is not a zero-knowledge proof.'}catch(error){document.getElementById('hash').textContent=error.message;document.getElementById('announcement').textContent=error.message}finally{button.disabled=false}});
+    document.getElementById('download').addEventListener('click',()=>{if(!compiled)return;const blob=new Blob([JSON.stringify(compiled,null,2)+'\n'],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`credit-gate-policy-v${compiled.version}.json`;link.style.display='none';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+    form.addEventListener('input',()=>{compiled=null;document.getElementById('download').disabled=true;document.getElementById('hash').textContent='Policy changed. Recompile to calculate a new digest.'});
+  </script>
+</body>
+</html>
