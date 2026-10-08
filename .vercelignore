@@ -1,0 +1,12 @@
+.git
+.env
+.env.*
+!.env.example
+node_modules
+coverage
+dist
+*.log
+credit-gate-policy-v*.json
+!credit-gate-policy-v1.0.0.json
+dvc/**/target
+dvc/proof-output

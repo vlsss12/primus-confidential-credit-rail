@@ -1,0 +1,32 @@
+{
+  "schema": "primus-credit-gate-policy/v1",
+  "name": "Institutional volume gate",
+  "version": "1.0.0",
+  "source": {
+    "provider": "binance",
+    "claim": "spot_trade_volume_30d",
+    "templateId": "ad7d29c8-d820-495a-8bf1-02b8f236a1ae",
+    "denomination": "USD"
+  },
+  "rule": {
+    "field": "spot_trade_volume_30d",
+    "operator": ">=",
+    "threshold": 1000000
+  },
+  "disclosure": {
+    "eligibleOnly": true,
+    "discloseExactValue": false,
+    "discloseRawResponse": false
+  },
+  "binding": {
+    "chainId": 84532,
+    "expiresInSeconds": 900,
+    "subjectRequired": true,
+    "policyHashRequired": true
+  },
+  "execution": {
+    "mode": "primus-dvc-zkvm",
+    "status": "configuration-only-no-proof-generated"
+  },
+  "policyHash": "sha256:84ef8ea18f4e12144d5f2abc36a4e65b6625cd91a9fbaee40d5744f473afee2e"
+}

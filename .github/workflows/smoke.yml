@@ -13,3 +13,6 @@ jobs:
         with:
           node-version: 20
       - run: node scripts/smoke-test.mjs
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Run shared Credit Gate conformance vectors
+        run: cargo test --locked --manifest-path dvc/credit-gate/Cargo.toml

@@ -1,9 +1,13 @@
-.DS_Store
 .env
 .env.*
 !.env.example
 node_modules/
+.DS_Store
 .vercel/
 dist/
 coverage/
 *.log
+dvc/credit-gate/target/
+dvc/credit-gate-program/target/
+dvc/local-runner/target/
+dvc/proof-output/

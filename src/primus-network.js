@@ -67,6 +67,7 @@ export async function runPrimusNetworkProof({
   const attestation = await primusNetwork.attest({
     ...taskParams,
     ...task,
+    allJsonResponseFlag: 'true',
     ...(additionParams ? { additionParams } : {}),
   });
 
@@ -78,6 +79,38 @@ export async function runPrimusNetworkProof({
     taskId: attestation[0].taskId,
     reportTxHash: attestation[0].reportTxHash,
   });
+  if (!Array.isArray(result) || result.length === 0) {
+    throw new Error('Primus returned no verified task results. The attestation cannot be treated as successful.');
+  }
 
-  return { address, task, attestation, result };
+  // This response may contain private exchange data. Keep it in memory only;
+  // callers must explicitly choose any export or onward transmission.
+  const rawJsonResponse = primusNetwork.getAllJsonResponse?.(task.taskId);
+  return { address, task, attestation, result, rawJsonResponse };
+}
+
+/** Build the documented DVC request envelope without sending or persisting it. */
+export function prepareDvcRequest({ attestation, rawJsonResponse }) {
+  if (!Array.isArray(attestation) || attestation.length === 0) {
+    throw new Error('A verified Primus attestation is required before preparing DVC input.');
+  }
+  if (rawJsonResponse === undefined || rawJsonResponse === null || rawJsonResponse.length === 0) {
+    throw new Error('Primus did not expose the raw JSON response for this task.');
+  }
+  let parsed = rawJsonResponse;
+  if (typeof rawJsonResponse === 'string') {
+    try { parsed = JSON.parse(rawJsonResponse); } catch {
+      throw new Error('Primus returned an unreadable raw JSON response.');
+    }
+  }
+  if (!Array.isArray(parsed) || parsed.length === 0 || parsed.some((item) =>
+    !item || typeof item.id !== 'string' || typeof item.content !== 'string'
+  )) throw new Error('Primus raw response must be an array of {id, content} records.');
+  return {
+    // The pinned official verifier crate uses this legacy misspelling.
+    // Keep this aligned with DVC-Demo's testdata until Primus fixes the schema.
+    verification_type: 'HASH_COMPARSION',
+    public_data: attestation,
+    private_data: { plain_json_response: parsed },
+  };
 }

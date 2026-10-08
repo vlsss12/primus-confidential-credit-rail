@@ -2,9 +2,9 @@
 
 An independent, open-source prototype exploring how DeFi applications can verify narrow eligibility claims without collecting a user's full financial profile. It combines Primus zkTLS source-attestation flows, a request-bound testnet verifier, and a versioned credit-policy workbench.
 
-> **Project status:** community prototype. Credit Gate currently compiles policy configuration; it does not run a DVC/zkVM proof or make a real credit decision. ProofGate verifies source-attestation provenance only and is not a credit/KYC authorization token.
+> **Project status:** community prototype. Credit Gate compiles policy configuration and now includes a locally compiled SP1 guest plus an opt-in local CPU runner. No real attestation has yet been executed/proven end-to-end, and the project does not make a production credit decision. ProofGate verifies source-attestation provenance only and is not a credit/KYC authorization token.
 
-**Live app:** [primus-credit-rail.vercel.app](https://primus-credit-rail.vercel.app/) · **Credit Gate:** [Policy Lab](https://primus-credit-rail.vercel.app/credit-gate.html) · **ProofGate:** [Request-bound verifier](https://primus-credit-rail.vercel.app/proofgate.html)
+**Live app:** [primus-credit-rail.vercel.app](https://primus-credit-rail.vercel.app/) · **Credit Gate:** [Policy Lab](https://primus-credit-rail.vercel.app/credit-gate.html) · [DVC Proof Lab](https://primus-credit-rail.vercel.app/dvc-proof-lab.html) · **ProofGate:** [Request-bound verifier](https://primus-credit-rail.vercel.app/proofgate.html)
 
 ![Status](https://img.shields.io/badge/status-community%20prototype-33c7e8)
 ![Primus](https://img.shields.io/badge/Primus-zkTLS-ff6b35)
@@ -20,9 +20,12 @@ An independent, open-source prototype exploring how DeFi applications can verify
 - Bind the policy to a denomination, target chain, subject requirement, expiry window, and minimal-disclosure output.
 - Compile a deterministic policy JSON and calculate its SHA-256 configuration digest in the browser.
 - Download the policy manifest for review and future verifier implementation.
+- Run a host-tested Rust policy core and an SP1 guest that validates the Primus attestation before applying the policy.
+- Use the local-only SP1 CPU runner to execute/prove a downloaded DVC input; it does not upload data or use a hosted prover.
 - See the DVC execution prerequisites and current integration status directly in the UI.
+- Explore eight deterministic, browser-local conformance scenarios in the [DVC Proof Lab](https://primus-credit-rail.vercel.app/dvc-proof-lab.html#test-kit); download the versioned vectors and a privacy-safe run report. The same vectors are consumed by the Rust core test suite and GitHub Actions. All fixtures are synthetic; no Primus proof is generated.
 
-The policy digest commits to configuration; it is **not** a zk proof, attestation, signed receipt, or authorization. The page does not connect a wallet, call Binance, submit a Primus task, or transmit policy data. See [DVC Policy Lab notes](docs/DVC_POLICY_LAB.md).
+The policy digest commits to configuration; it is **not** a zk proof, attestation, signed receipt, or authorization. The browser can request a Binance volume attestation through the Primus Network SDK, and the user may explicitly download a file containing the raw response. The site does not upload that file. Do not share it publicly. See [DVC implementation status](docs/DVC_IMPLEMENTATION.md) and [DVC Policy Lab notes](docs/DVC_POLICY_LAB.md).
 
 ### ProofGate · request-bound source verification
 
@@ -49,12 +52,14 @@ The Primus Extension, connected wallet, supported network, and any required test
 ```text
 Primus source attestation ──> ProofGate checks task/request provenance ──> minimal informational receipt
 
-Credit Gate policy form ──> canonical policy JSON + SHA-256 digest ──> downloadable configuration
+Credit Gate policy form ──> canonical policy JSON + SHA-256 digest
                                       │
-                                      └──> DVC/zkVM execution is not connected yet
+                                      └──> Rust policy core + SP1 guest (compiled)
+                                                  │
+Primus attestation ──> official signature/source/hash verifier ──> local CPU runner (not yet end-to-end tested)
 ```
 
-The intended future application is to verify the Primus attestation inside an external DVC program, bind it to the policy digest and request context, compute eligibility privately, then disclose only the required boolean claim. That path requires an approved app/template context, a verifier program that validates the Primus signature/source URL/data hash, a configured prover service, and a target-chain verifier. See [architecture](docs/ARCHITECTURE.md) and [Builder review packet](docs/BUILDER_REVIEW.md).
+The intended application is to verify the Primus attestation inside a DVC program, bind it to the policy digest and request context, compute eligibility privately, then disclose only the required claim. A local guest and CPU runner now exist, but real-attestation execution and proof verification remain untested; Builder deployment and a target-chain verifier still require Primus's approved trust and service setup. See [architecture](docs/ARCHITECTURE.md) and [Builder review packet](docs/BUILDER_REVIEW.md).
 
 **Privacy note:** this project does not submit raw attestation bodies or API credentials to its own ProofGate API. Primus SDK/extension, attestors, and onchain storage have their own disclosure properties; do not assume every attestation field is private.
 
@@ -65,13 +70,17 @@ The intended future application is to verify the Primus attestation inside an ex
 | Public product UI and Railbot guide | Live |
 | Synthetic policy sandbox | Implemented; illustrative only |
 | Credit Gate policy JSON + SHA-256 digest | Implemented in browser |
+| Rust policy evaluator + policy-hash/binding tests | Implemented and host-tested |
+| SP1 guest wrapper and RISC-V ELF | Compiled; real-attestation execution pending |
+| Local CPU runner | Implemented; runs offline and never selects hosted prover |
 | Primus BNB ZK ID flow | Integrated with public test context |
 | Network-JS-SDK adapter | Implemented; Base Sepolia/Base chain checks |
 | Binance volume and KYC template entry points | Implemented with public template IDs; validate suitability with Primus |
 | ProofGate server verifier and durable replay protection | Implemented; Base Sepolia, server configuration required |
 | Owner-authorized live ProofGate receipt + replay check | Pending |
 | Production App ID/template confirmation | Pending Primus team guidance |
-| DVC/zkVM prover and onchain eligibility verifier | Not implemented |
+| Primus verifier adapter inside guest | Implemented against pinned official crate; attestor trust anchor needs Primus confirmation |
+| Builder DVC service and on-chain eligibility verifier | Not connected; requires approved service access and verifier contract |
 
 This is a **zkTLS** integration prototype, not a zkFHE computation-network integration. General incentive language elsewhere does not establish XP, token, Builder-role, or airdrop eligibility. No reward is promised by this repository.
 
@@ -84,13 +93,18 @@ npm install
 npx vercel dev
 ```
 
-Open the local URL printed by Vercel, then visit `/`, `/credit-gate.html`, or `/proofgate.html`. A plain static server can display the UI but cannot serve the ProofGate API. See [ProofGate setup](docs/PROOFGATE.md) for the required environment variables. Never commit `.env` files, private keys, API keys, or App Secrets.
+Open the local URL printed by Vercel, then visit `/`, `/credit-gate.html`, `/dvc-proof-lab.html`, or `/proofgate.html`. A plain static server can display the UI but cannot serve the ProofGate API. See [ProofGate setup](docs/PROOFGATE.md) for the required environment variables. Never commit `.env` files, private keys, API keys, or App Secrets.
 
 ## Project map
 
 ```text
 index.html                 Main product page and Primus proof entry points
 credit-gate.html           Policy compiler and DVC readiness guide
+dvc-proof-lab.html         Synthetic DVC conformance workbench
+dvc/credit-gate/            Host-tested Rust policy evaluator
+dvc/credit-gate-program/    SP1 guest and compiled RISC-V ELF
+dvc/local-runner/           Local CPU execute/prove CLI (no hosted proving)
+dvc/test-vectors/           Versioned synthetic conformance fixtures
 proofgate.html             Wallet/request-bound source verification UI
 api/proofgate.js           Same-origin challenge and verification endpoint
 lib/proofgate.js           Server-side verification and replay protection

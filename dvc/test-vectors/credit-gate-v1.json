@@ -1,0 +1,66 @@
+{
+  "schema": "primus-credit-gate-test-vectors/v1",
+  "policyFile": "credit-gate-policy-v1.0.0.json",
+  "policyHash": "sha256:84ef8ea18f4e12144d5f2abc36a4e65b6625cd91a9fbaee40d5744f473afee2e",
+  "fixedNow": 1800000000,
+  "subject": "0x1111111111111111111111111111111111111111",
+  "vectors": [
+    {
+      "id": "eligible",
+      "title": "Eligible at threshold",
+      "claim": { "templateId": "ad7d29c8-d820-495a-8bf1-02b8f236a1ae", "denomination": "USD", "recipient": "0x1111111111111111111111111111111111111111", "chainId": 84532, "attestedAt": 1799999990, "volume": "1250000.00" },
+      "expected": "eligible",
+      "reason": "Valid bindings and fresh claim meet the configured threshold."
+    },
+    {
+      "id": "below-threshold",
+      "title": "Below threshold",
+      "claim": { "templateId": "ad7d29c8-d820-495a-8bf1-02b8f236a1ae", "denomination": "USD", "recipient": "0x1111111111111111111111111111111111111111", "chainId": 84532, "attestedAt": 1799999990, "volume": "250000.00" },
+      "expected": "ineligible",
+      "reason": "Valid bindings, but the exact fixed-point value is below policy."
+    },
+    {
+      "id": "tampered-policy",
+      "title": "Policy commitment mismatch",
+      "policyHash": "sha256:00",
+      "claim": { "templateId": "ad7d29c8-d820-495a-8bf1-02b8f236a1ae", "denomination": "USD", "recipient": "0x1111111111111111111111111111111111111111", "chainId": 84532, "attestedAt": 1799999990, "volume": "1250000.00" },
+      "expected": "rejected",
+      "reason": "The verifier must fail closed when the expected policy digest differs."
+    },
+    {
+      "id": "wrong-subject",
+      "title": "Subject mismatch",
+      "claim": { "templateId": "ad7d29c8-d820-495a-8bf1-02b8f236a1ae", "denomination": "USD", "recipient": "0x2222222222222222222222222222222222222222", "chainId": 84532, "attestedAt": 1799999990, "volume": "1250000.00" },
+      "expected": "rejected",
+      "reason": "A claim for another subject must not produce an eligibility result."
+    },
+    {
+      "id": "expired",
+      "title": "Expired claim",
+      "claim": { "templateId": "ad7d29c8-d820-495a-8bf1-02b8f236a1ae", "denomination": "USD", "recipient": "0x1111111111111111111111111111111111111111", "chainId": 84532, "attestedAt": 1799999099, "volume": "1250000.00" },
+      "expected": "rejected",
+      "reason": "An otherwise valid result is rejected by the consumer freshness check at fixedNow."
+    },
+    {
+      "id": "wrong-source",
+      "title": "Template mismatch",
+      "claim": { "templateId": "00000000-0000-0000-0000-000000000000", "denomination": "USD", "recipient": "0x1111111111111111111111111111111111111111", "chainId": 84532, "attestedAt": 1799999990, "volume": "1250000.00" },
+      "expected": "rejected",
+      "reason": "A claim from a different template must not be evaluated under this policy."
+    },
+    {
+      "id": "wrong-chain",
+      "title": "Chain mismatch",
+      "claim": { "templateId": "ad7d29c8-d820-495a-8bf1-02b8f236a1ae", "denomination": "USD", "recipient": "0x1111111111111111111111111111111111111111", "chainId": 1, "attestedAt": 1799999990, "volume": "1250000.00" },
+      "expected": "rejected",
+      "reason": "A claim bound to a different chain must be rejected."
+    },
+    {
+      "id": "invalid-decimal",
+      "title": "Invalid decimal precision",
+      "claim": { "templateId": "ad7d29c8-d820-495a-8bf1-02b8f236a1ae", "denomination": "USD", "recipient": "0x1111111111111111111111111111111111111111", "chainId": 84532, "attestedAt": 1799999990, "volume": "1000000.000000001" },
+      "expected": "rejected",
+      "reason": "Values beyond the supported eight decimal places must be rejected, not rounded."
+    }
+  ]
+}

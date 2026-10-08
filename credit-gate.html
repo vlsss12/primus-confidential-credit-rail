@@ -16,7 +16,7 @@
 <body>
   <main class="shell">
     <header class="top"><a class="brand" href="/">PRIMUS / CREDIT RAIL</a><a href="/">← Back to overview</a></header>
-    <section class="hero"><div class="eyebrow">Policy compiler · DVC integration workbench</div><h1>Credit Gate</h1><p>Define the exact rule a future verifier should enforce. The policy is canonicalized, versioned and hashed so an attestation and its private computation can be bound to the same rule.</p></section>
+    <section class="hero"><div class="eyebrow">Policy compiler · DVC integration workbench</div><h1>Credit Gate</h1><p>Define the exact rule for the local SP1 guest. The policy is canonicalized, versioned and hashed so a Primus attestation and private computation can be bound to the same rule.</p></section>
     <section class="layout" aria-label="Policy configuration and DVC readiness">
       <article class="card"><h2>Eligibility policy</h2><p class="sub">Start with a single source claim. Use a conservative, explicit threshold and disclose only the boolean outcome.</p>
         <form id="policyForm">
@@ -25,7 +25,7 @@
             <div class="field"><label for="version">Policy version</label><input id="version" value="1.0.0" maxlength="20" pattern="[0-9]+\.[0-9]+\.[0-9]+" required /><span class="hint">Semantic version, e.g. 1.0.0</span></div>
             <div class="field"><label for="source">Attested source</label><select id="source"><option value="binance_spot_volume_30d">Binance · 30-day spot volume</option></select><span class="hint">Published template; use only if appropriate for your app.</span></div>
             <div class="field"><label for="threshold">Minimum 30-day volume</label><input id="threshold" type="number" min="0" max="1000000000000" step="1" value="1000000" inputmode="numeric" required /><span class="hint">Threshold is policy input, not a reported user balance.</span></div>
-            <div class="field"><label for="currency">Denomination</label><select id="currency"><option>USDT</option><option>USDC</option></select></div>
+            <div class="field"><label for="currency">Denomination</label><select id="currency"><option>USD</option></select><span class="hint">Primus Binance volume template reports `spotVolume30d` in USD.</span></div>
             <div class="field"><label for="chain">Target chain ID</label><select id="chain"><option value="84532">Base Sepolia · 84532</option><option value="8453">Base · 8453</option></select><span class="hint">The verifier should reject proofs bound to another chain.</span></div>
             <div class="field"><label for="expiry">Proof validity window</label><select id="expiry"><option value="900">15 minutes</option><option value="3600">1 hour</option><option value="86400">24 hours</option></select></div>
             <div class="field full"><span class="hint">Disclosure is fixed to the minimal claim: eligible: true/false only. Exact volume, account identifier and raw response are excluded.</span></div>
@@ -38,11 +38,12 @@
       <aside>
         <article class="card"><h2>DVC execution readiness</h2><p class="sub">These are real prerequisites for private computation, not decorative pipeline steps.</p>
           <div class="state"><strong>Policy schema + version commitment</strong><span class="pill ready">AVAILABLE</span></div>
+          <div class="state"><strong>Rust eligibility core + binding tests</strong><span class="pill ready">HOST TESTED</span></div>
           <div class="state"><strong>Primus attestation signature / URL / data-hash verifier</strong><span class="pill pending">DVC PROGRAM</span></div>
           <div class="state"><strong>Business rule inside zkVM program</strong><span class="pill pending">NOT CONNECTED</span></div>
           <div class="state"><strong>TEE / zkVM prover endpoint</strong><span class="pill pending">NOT CONFIGURED</span></div>
           <div class="state"><strong>Onchain proof verifier + replay policy</strong><span class="pill pending">NOT DEPLOYED</span></div>
-          <p class="callout">A safe DVC program must verify the Primus attestation and bind its signature, requested URL, response/data hash, policy digest, chain, expiry and recipient before evaluating the threshold. This browser page cannot substitute for those checks.</p>
+          <p class="callout">The Rust rule engine is host-tested and compiled into an SP1 guest. A local CPU runner is available in the repository, but this page does not execute the guest or generate proofs. The guest verifies the Primus signature, source URL and response/hash before applying the USD volume rule. Its attestor trust anchor still requires Primus confirmation.</p>
         </article>
         <article class="card" style="margin-top:17px"><h2>Verifier output contract</h2><p class="sub">Minimal intended public result; private source fields stay inside the DVC computation.</p><pre class="output">{
   "policyHash": "sha256:…",
@@ -54,7 +55,7 @@
 }</pre><p class="callout">Until a real DVC proof is produced and independently verified, this output is only a schema example—not a receipt or authorization token.</p></article>
       </aside>
     </section>
-    <footer class="footer">No wallet, Binance account, API key, raw financial data, or attestation is requested or transmitted by this policy compiler. SHA-256 identifies the policy configuration; it is not itself a zero-knowledge proof.<br /><a href="https://github.com/primus-labs/DVC-Intro" target="_blank" rel="noopener noreferrer" style="color:var(--cyan)">Primus DVC architecture ↗</a> · <a href="https://github.com/primus-labs/DVC-Demo" target="_blank" rel="noopener noreferrer" style="color:var(--cyan)">Official DVC demo ↗</a></footer>
+    <footer class="footer">This policy compiler does not request a wallet, Binance login, API key, raw financial data or attestation. A separate Network SDK flow on the home page can request an attestation and lets you explicitly download its sensitive raw-response payload. SHA-256 identifies policy configuration; it is not itself a zero-knowledge proof. The local SP1 guest/CPU runner is not connected to a deployed Primus DVC service or on-chain verifier.<br /><a href="https://github.com/vlsss12/primus-confidential-credit-rail/blob/main/docs/DVC_IMPLEMENTATION.md" target="_blank" rel="noopener noreferrer" style="color:var(--cyan)">DVC implementation status ↗</a> · <a href="https://github.com/primus-labs/DVC-Intro" target="_blank" rel="noopener noreferrer" style="color:var(--cyan)">Primus DVC architecture ↗</a> · <a href="https://github.com/primus-labs/DVC-Demo" target="_blank" rel="noopener noreferrer" style="color:var(--cyan)">Official DVC demo ↗</a></footer>
   </main>
   <div id="announcement" class="sr" role="status" aria-live="polite"></div>
   <aside class="guide-dock" aria-label="Getting started help">
