@@ -4,7 +4,7 @@ An independent, open-source prototype exploring how DeFi applications can verify
 
 > **Project status:** community prototype. Credit Gate compiles policy configuration and now includes a locally compiled SP1 guest plus an opt-in local CPU runner. No real attestation has yet been executed/proven end-to-end, and the project does not make a production credit decision. ProofGate verifies source-attestation provenance only and is not a credit/KYC authorization token.
 
-**Live app:** [primus-credit-rail.vercel.app](https://primus-credit-rail.vercel.app/) · **Credit Gate:** [Policy Lab](https://primus-credit-rail.vercel.app/credit-gate.html) · [DVC Proof Lab](https://primus-credit-rail.vercel.app/dvc-proof-lab.html) · **ProofGate:** [Request-bound verifier](https://primus-credit-rail.vercel.app/proofgate.html)
+**Live app:** [primus-credit-rail.vercel.app](https://primus-credit-rail.vercel.app/) · **Credit Gate:** [Policy Lab](https://primus-credit-rail.vercel.app/credit-gate.html) · [Policy Gate Simulator](https://primus-credit-rail.vercel.app/credit-gate-demo.html) · [DVC Proof Lab](https://primus-credit-rail.vercel.app/dvc-proof-lab.html) · **ProofGate:** [Request-bound verifier](https://primus-credit-rail.vercel.app/proofgate.html)
 
 ![Status](https://img.shields.io/badge/status-community%20prototype-33c7e8)
 ![Primus](https://img.shields.io/badge/Primus-zkTLS-ff6b35)
@@ -26,6 +26,13 @@ An independent, open-source prototype exploring how DeFi applications can verify
 - Explore eight deterministic, browser-local conformance scenarios in the [DVC Proof Lab](https://primus-credit-rail.vercel.app/dvc-proof-lab.html#test-kit); download the versioned vectors and a privacy-safe run report. The same vectors are consumed by the Rust core test suite and GitHub Actions. All fixtures are synthetic; no Primus proof is generated.
 
 The policy digest commits to configuration; it is **not** a zk proof, attestation, signed receipt, or authorization. The browser can request a Binance volume attestation through the Primus Network SDK, and the user may explicitly download a file containing the raw response. The site does not upload that file. Do not share it publicly. See [DVC implementation status](docs/DVC_IMPLEMENTATION.md) and [DVC Policy Lab notes](docs/DVC_POLICY_LAB.md).
+
+### Policy Gate Simulator · illustrative credit flow
+
+- Explore conservative, balanced, and flexible collateral-ratio thresholds against synthetic inputs.
+- Evaluate the scenario entirely in the browser; no wallet, exchange credentials, financial data, or server API is used.
+- Download or copy a minimal sample decision receipt that intentionally omits the entered dollar amounts.
+- The interface labels every outcome as an illustrative simulation—not a Primus proof, live credit decision, or financial advice.
 
 ### ProofGate · request-bound source verification
 
@@ -93,13 +100,14 @@ npm install
 npx vercel dev
 ```
 
-Open the local URL printed by Vercel, then visit `/`, `/credit-gate.html`, `/dvc-proof-lab.html`, or `/proofgate.html`. A plain static server can display the UI but cannot serve the ProofGate API. See [ProofGate setup](docs/PROOFGATE.md) for the required environment variables. Never commit `.env` files, private keys, API keys, or App Secrets.
+Open the local URL printed by Vercel, then visit `/`, `/credit-gate.html`, `/credit-gate-demo.html`, `/dvc-proof-lab.html`, or `/proofgate.html`. A plain static server can display the UI but cannot serve the ProofGate API. See [ProofGate setup](docs/PROOFGATE.md) for the required environment variables. Never commit `.env` files, private keys, API keys, or App Secrets.
 
 ## Project map
 
 ```text
 index.html                 Main product page and Primus proof entry points
 credit-gate.html           Policy compiler and DVC readiness guide
+credit-gate-demo.html     Local-only illustrative policy gate simulator
 dvc-proof-lab.html         Synthetic DVC conformance workbench
 dvc/credit-gate/            Host-tested Rust policy evaluator
 dvc/credit-gate-program/    SP1 guest and compiled RISC-V ELF
