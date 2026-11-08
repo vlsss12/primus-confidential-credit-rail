@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-08 — Integration hardening and review evidence
+
+- Unified Network SDK loading on the locked 0.1.11 release and removed duplicate browser handlers.
+- Added an independent build-time DVC attestor trust anchor; missing configuration rejects all inputs.
+- Required complete-response SHA-256 commitment matching before a private DVC export is available.
+- Stopped requesting complete private responses for ordinary source/KYC verification.
+- Recorded the tutorial comparison, current test/build evidence and public upstream contribution status.
+- Clarified UI labels for source-only KYC verification, local response handling and unconnected business-verification stages.
+- Published reproducible contributor instructions, a documentation index and a live CI badge.
+- Kept personal correspondence outside the current repository contents.
+
+Validation: 51 JavaScript tests, 12 Rust core tests and smoke checks passed. Live owner receipt/replay, compatible DVC template/trust setup and program recognition remain pending. See [validation](INTEGRATION_VALIDATION_2026-11-08.md).
+
 ## 2026-10-02 — ProofGate verification prototype
 
 - Added a Base Sepolia source-attestation verifier and dedicated `/proofgate.html` interface.

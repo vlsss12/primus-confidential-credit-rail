@@ -7,10 +7,22 @@ An independent, open-source prototype exploring how DeFi applications can verify
 **Live app:** [primus-credit-rail.vercel.app](https://primus-credit-rail.vercel.app/) · **Credit Gate:** [Policy Lab](https://primus-credit-rail.vercel.app/credit-gate.html) · [Policy Gate Simulator](https://primus-credit-rail.vercel.app/credit-gate-demo.html) · [DVC Proof Lab](https://primus-credit-rail.vercel.app/dvc-proof-lab.html) · **ProofGate:** [Request-bound verifier](https://primus-credit-rail.vercel.app/proofgate.html)
 
 ![Status](https://img.shields.io/badge/status-community%20prototype-33c7e8)
+[![CI](https://github.com/vlsss12/primus-confidential-credit-rail/actions/workflows/smoke.yml/badge.svg)](https://github.com/vlsss12/primus-confidential-credit-rail/actions/workflows/smoke.yml)
 ![Primus](https://img.shields.io/badge/Primus-zkTLS-ff6b35)
 ![License](https://img.shields.io/badge/license-MIT-72e6b3)
 
 ![Privacy × Verification](assets/primus-privacy-verification-banner.png)
+
+## Start here
+
+| Goal | Entry point |
+| --- | --- |
+| Explore the product without connecting a wallet | [Policy Gate Simulator](https://primus-credit-rail.vercel.app/credit-gate-demo.html) |
+| Review request-bound source verification | [ProofGate](https://primus-credit-rail.vercel.app/proofgate.html) · [verifier design](docs/PROOFGATE.md) |
+| Inspect the Primus integration and current evidence | [Technical review packet](docs/BUILDER_REVIEW.md) · [validation record](docs/INTEGRATION_VALIDATION_2026-11-08.md) |
+| Reproduce the policy checks | [Shared test vectors](dvc/test-vectors/credit-gate-v1.json) · [contribution guide](CONTRIBUTING.md) |
+
+The project connects an official Primus Network SDK flow to independent server checks. The policy compiler and synthetic test kit make the proposed business rules reproducible. Source verification, policy simulation and a completed DVC proof are distinct stages; the integration status below identifies which are implemented and which need live validation.
 
 ## Product capabilities
 
@@ -91,18 +103,30 @@ The intended application is to verify the Primus attestation inside a DVC progra
 
 This is a **zkTLS** integration prototype, not a zkFHE computation-network integration. General incentive language elsewhere does not establish XP, token, Builder-role, or airdrop eligibility. No reward is promised by this repository.
 
-Builder review materials: [technical packet](docs/BUILDER_REVIEW.md), [tutorial alignment](docs/TUTORIAL_ALIGNMENT.md), [public contribution ledger](docs/CONTRIBUTION_LEDGER.md), and [unsent team request](docs/INTEGRATION_REQUEST.md). The Foundation's 18% Community allocation describes support for developer and community programs; it does not automatically enroll this application or set an individual award.
+Builder review materials: [technical packet](docs/BUILDER_REVIEW.md), [tutorial alignment](docs/TUTORIAL_ALIGNMENT.md), and [public contribution ledger](docs/CONTRIBUTION_LEDGER.md).
 
 ## Run locally
 
 The public UI is static, but ProofGate's API routes require Vercel's local runtime and server-only environment variables.
 
 ```bash
-npm install
+npm ci --ignore-scripts
 npx vercel dev
 ```
 
 Open the local URL printed by Vercel, then visit `/`, `/credit-gate.html`, `/credit-gate-demo.html`, `/dvc-proof-lab.html`, or `/proofgate.html`. A plain static server can display the UI but cannot serve the ProofGate API. See [ProofGate setup](docs/PROOFGATE.md) for the required environment variables. Never commit `.env` files, private keys, API keys, or App Secrets.
+
+### Reproduce the checks
+
+```bash
+npm test
+npm run smoke
+cargo test --locked --manifest-path dvc/credit-gate/Cargo.toml
+```
+
+On 2026-11-08, 51 JavaScript tests and 12 Rust core tests passed. These checks use controlled fixtures; they do not submit wallet transactions or establish live attestation success. See the [validation record](docs/INTEGRATION_VALIDATION_2026-11-08.md) for the SP1 build and remaining acceptance steps.
+
+Documentation: [index](docs/README.md) · [architecture](docs/ARCHITECTURE.md) · [changelog](docs/CHANGELOG.md) · [security policy](SECURITY.md).
 
 ## Project map
 

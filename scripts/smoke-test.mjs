@@ -74,7 +74,7 @@ for (const header of ['X-Content-Type-Options', 'X-Frame-Options', 'Content-Secu
   }
 }
 
-for (const requiredDoc of ['docs/BUILDER_REVIEW.md', 'docs/INTEGRATION_REQUEST.md']) {
+for (const requiredDoc of ['docs/BUILDER_REVIEW.md', 'docs/TUTORIAL_ALIGNMENT.md']) {
   try {
     await readFile(resolve(process.cwd(), requiredDoc), 'utf8');
   } catch {
