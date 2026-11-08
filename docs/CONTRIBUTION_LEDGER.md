@@ -30,7 +30,7 @@ These are submitted contributions. Open PRs must not be described as accepted fi
 | Tutorial comparison | Recorded in `docs/TUTORIAL_ALIGNMENT.md` |
 | Owner live receipt/replay test | Pending |
 | DVC operational signer/template approval | Pending |
-| Applicable developer incentive application/process | Team confirmation requested in the unsent draft |
+| Applicable developer incentive application/process | Program and review criteria not yet confirmed |
 | Builder role or grant approval | No approval recorded in this packet |
 | Token amount or XP conversion | No applicable individual formula recorded |
 
