@@ -1,5 +1,14 @@
 # ProofGate live validation record — VLS
 
+## Rechecked on 2026-11-08
+
+- 51 JavaScript tests and 12 Rust core tests passed; they use synthetic fixtures.
+- Network SDK pinned consistently to 0.1.11; the official ABI matches the server verifier.
+- Production browser check reported configuration present and stopped before a transaction because the wallet was not on Base Sepolia.
+- No live owner task, receipt or replay result was obtained. The checklist below remains pending.
+- DVC export now requires a matching full-response SHA-256 commitment; it does not label an arbitrary raw JSON response as suitable for proving.
+- Full review and distinction from reward eligibility: [Builder packet](BUILDER_REVIEW.md).
+
 ## Verified on 2026-10-02
 
 - `npm test`: 40 passed, 0 failed. Tests use fixtures and do not prove live SDK success.

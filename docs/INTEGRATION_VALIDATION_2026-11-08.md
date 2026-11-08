@@ -5,6 +5,7 @@
 - All Network SDK browser paths use `src/primus-sdk.js`, pinned to the same `0.1.11` release as the package and lockfile. Removed duplicate legacy implementations of the Binance volume/KYC functions.
 - DVC rejects a signer that differs from the independently configured build-time `PRIMUS_DVC_TRUSTED_ATTESTOR`. Missing trust configuration rejects all inputs. No signing address is invented or copied from a proof.
 - CI runs JavaScript tests in addition to smoke and Rust conformance checks.
+- Ordinary source checks no longer request or retrieve the full private response. Volume export preparation explicitly opts in, then compares SHA-256 of the complete response against its signed commitment before offering a local download. Plaintext, missing commitments and altered bodies are rejected.
 
 ## Live acceptance remains separate
 
@@ -22,7 +23,7 @@ Before a real DVC run, independently verify the trusted attestor address, embed 
 
 ## Validation results
 
-- `npm test`: 49 passed, 0 failed. Includes SDK pinning, wallet/chain/expiry checks, source receipt validation and replay rejection with fixtures.
+- `npm test`: 51 passed, 0 failed. Includes SDK pinning, wallet/chain/expiry checks, source receipt validation and replay rejection with fixtures, opt-in private response handling and DVC export commitment checks.
 - Rust core: 12 passed, 0 failed, including missing trust configuration, malformed/zero addresses and attacker-selected signer rejection.
 - `npm run smoke`: passed, 14 product markers.
 - Patched SP1 guest rebuilt successfully as a 32-bit RISC-V ELF with the installed SP1 5.2 toolchain and compatible Cargo 1.88. SHA-256: `f04f96b16ed665bba2866afb8f13d8f8e0d44b9c85135715159c98c32a382ff6`. This build deliberately has no trusted attestor configured and rejects every input; it is compilation evidence only, not an operational proof program. Cargo 1.99 with this older SP1 compiler failed on `remap-path-scope`; using Cargo 1.88 with the SP1 compiler resolved the build.

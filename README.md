@@ -25,7 +25,7 @@ An independent, open-source prototype exploring how DeFi applications can verify
 - See the DVC execution prerequisites and current integration status directly in the UI.
 - Explore eight deterministic, browser-local conformance scenarios in the [DVC Proof Lab](https://primus-credit-rail.vercel.app/dvc-proof-lab.html#test-kit); download the versioned vectors and a privacy-safe run report. The same vectors are consumed by the Rust core test suite and GitHub Actions. All fixtures are synthetic; no Primus proof is generated.
 
-The policy digest commits to configuration; it is **not** a zk proof, attestation, signed receipt, or authorization. The browser can request a Binance volume attestation through the Primus Network SDK, and the user may explicitly download a file containing the raw response. The site does not upload that file. Do not share it publicly. See [DVC implementation status](docs/DVC_IMPLEMENTATION.md) and [DVC Policy Lab notes](docs/DVC_POLICY_LAB.md).
+The policy digest commits to configuration; it is **not** a zk proof, attestation, signed receipt, or authorization. The browser can request a Binance volume attestation through the Primus Network SDK. An optional private DVC download is enabled only when the complete response matches its signed SHA-256 commitment; the published field-level template must not be assumed to support it. The site does not upload that file. Do not share it publicly. See [DVC implementation status](docs/DVC_IMPLEMENTATION.md) and [DVC Policy Lab notes](docs/DVC_POLICY_LAB.md).
 
 ### Policy Gate Simulator · illustrative credit flow
 
@@ -85,11 +85,13 @@ The intended application is to verify the Primus attestation inside a DVC progra
 | Binance volume and KYC template entry points | Implemented with public template IDs; validate suitability with Primus |
 | ProofGate server verifier and durable replay protection | Implemented; Base Sepolia, server configuration required |
 | Owner-authorized live ProofGate receipt + replay check | Pending |
-| Production App ID/template confirmation | Pending Primus team guidance |
+| Hub project attribution for Network SDK usage | Pending Primus team guidance; Enterprise App ID signing is a separate integration path |
 | Primus verifier adapter inside guest | Implemented against pinned official crate; attestor trust anchor needs Primus confirmation |
 | Builder DVC service and on-chain eligibility verifier | Not connected; requires approved service access and verifier contract |
 
 This is a **zkTLS** integration prototype, not a zkFHE computation-network integration. General incentive language elsewhere does not establish XP, token, Builder-role, or airdrop eligibility. No reward is promised by this repository.
+
+Builder review materials: [technical packet](docs/BUILDER_REVIEW.md), [tutorial alignment](docs/TUTORIAL_ALIGNMENT.md), [public contribution ledger](docs/CONTRIBUTION_LEDGER.md), and [unsent team request](docs/INTEGRATION_REQUEST.md). The Foundation's 18% Community allocation describes support for developer and community programs; it does not automatically enroll this application or set an individual award.
 
 ## Run locally
 
