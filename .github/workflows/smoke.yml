@@ -12,6 +12,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - run: npm ci --ignore-scripts
+      - run: npm test
       - run: node scripts/smoke-test.mjs
       - uses: dtolnay/rust-toolchain@stable
       - name: Run shared Credit Gate conformance vectors

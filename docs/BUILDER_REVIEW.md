@@ -1,59 +1,58 @@
 # Builder review packet
 
-## Project
+Updated 2026-11-08. Owner: VLS, GitHub `vlsss12`, X `vlsss12`.
 
-- Name: Primus Confidential Credit Rail
+## Project and review scope
+
+- Project: Primus Confidential Credit Rail.
 - Repository: https://github.com/vlsss12/primus-confidential-credit-rail
-- Live demo: https://primus-credit-rail.vercel.app/
-- Owner handle: VLS
+- Demo: https://primus-credit-rail.vercel.app/
+- First review target: https://primus-credit-rail.vercel.app/proofgate.html
+- Developer Hub project ID: `2104955239034523648`.
+- Public App ID: `0x4038de97cf9c004d3f9890f5668b318230cc2e38`.
 
-## What is built
+Credit Rail is an independent community implementation exploring narrow, verifiable financial claims. Its current server verifier checks source-attestation provenance; it does not approve KYC, grant credit or execute a lending decision. Synthetic policy tools and the DVC guest are separate from that verifier.
 
-This is an independent privacy-focused finance prototype. It demonstrates how an institutional policy can consume selective claims rather than raw exchange balances or account history.
+## Integration path
 
-The public demo contains:
+The current application uses `@primuslabs/network-js-sdk@0.1.11`, the official Network path: `init → submitTask → attest → verifyAndPollTaskResult`. Browser and server ABI checks use that exact installed release.
 
-1. A synthetic policy sandbox for UX and policy evaluation.
-2. A Primus BNB ZK ID reference flow.
-3. A Primus Network-JS-SDK flow for the published Binance 30-day volume template.
-4. A Primus Network-JS-SDK flow for the published Binance KYC status template.
-5. A public architecture and privacy boundary.
+The Developer Hub tutorial also demonstrates `@primuslabs/zktls-js-sdk`, an Enterprise path with an App ID and server-side request signing. We registered a Hub project, but our Network integration does not use that Enterprise Secret or claim App-ID-attributed usage. Please confirm how Network SDK applications should associate usage with a Hub project for contributor review. See [tutorial alignment](TUTORIAL_ALIGNMENT.md).
 
-## Primus surfaces used
+Published templates selected from the Hub:
 
-### ProofGate: current review target
+| Purpose | Template | Current boundary |
+| --- | --- | --- |
+| Binance 30-day spot volume | `ad7d29c8-d820-495a-8bf1-02b8f236a1ae` | Source attestation; raw response export requires a matching full-response commitment |
+| Binance KYC status | `9859330b-b94f-47a4-8f13-0ca56dabe273` | Source attestation only; a successful task is not positive KYC approval |
 
-- Entry point: https://primus-credit-rail.vercel.app/proofgate.html
-- Scope: zkTLS source-attestation verification on Base Sepolia, not zkFHE computation or financial authorization.
-- Server verifier: reads the official TaskManager, checks wallet/template/request bindings and consumes a nonce atomically in Redis.
-- Test coverage: 40 automated tests passed on 2026-10-02; fixtures are not evidence of a successful live attestation.
-- Public deployment check on 2026-10-02 after Redis setup: `/api/proofgate` reported `ready: true`; a synthetic-address challenge returned HTTP 200. A real owner-authorized attestation and replay test are still pending.
-- No live end-to-end success or Primus endorsement is claimed. See [ProofGate limitations](PROOFGATE.md) and [live test record](LIVE_TEST_RECORD.md).
+ProofGate uses Base Sepolia (`84532`), the official TaskManager at `0xC02234058caEaA9416506eABf6Ef3122fCA939E8`, confirmed task state, exact wallet/template/audience/request binding, and a durable Redis nonce.
 
-The zkFHE Network document's general incentive language does not establish eligibility for this zkTLS prototype. Contributor recognition and any reward program require separately published criteria or explicit team confirmation.
+## Evidence and remaining acceptance
 
-- Network-JS-SDK: `@primuslabs/network-js-sdk`
-- BNB ZK ID SDK: `@primuslabs/bnb-zkid-sdk`
-- Binance 30-day volume template: `ad7d29c8-d820-495a-8bf1-02b8f236a1ae`
-- Binance KYC status template: `9859330b-b94f-47a4-8f13-0ca56dabe273`
-- Development chain for the Network flow: Base Sepolia (`84532`)
+- 51 JavaScript tests passed, including SDK pinning, wallet/chain/expiry guards, request bindings, fixture receipt/replay cases, and DVC response-commitment checks.
+- 12 Rust core tests passed. The changed SP1 guest compiled; the recorded unconfigured ELF rejects all inputs until an independent trusted signer is embedded.
+- Smoke check passed. Automated tests do not demonstrate a real owner attestation.
+- Production reported server configuration present. The browser check stopped before a transaction because the wallet was not on Base Sepolia.
+- A real owner-authorized task, receipt and identical-request replay rejection remain pending.
+- A compatible full-response-hash template/response, independently approved DVC signer and relying verifier setup remain pending. The existing field-level volume template must not be assumed DVC-compatible.
 
-## Privacy and security boundary
+Detailed evidence: [integration validation](INTEGRATION_VALIDATION_2026-11-08.md), [live acceptance](LIVE_TEST_RECORD.md), [DVC implementation](DVC_IMPLEMENTATION.md), [contribution ledger](CONTRIBUTION_LEDGER.md).
 
-- Users authenticate with their own Binance session through Primus Extension.
-- The app does not request or store Binance passwords, API keys, wallet private keys or recovery phrases.
-- ProofGate's API does not accept or store raw attestation bodies. Official SDK/extension logging and onchain disclosure have their own privacy properties; not all proof fields should be assumed private.
-- App Secrets are not included in the repository or frontend bundle.
-- The synthetic policy export is clearly labelled as a demonstration and is not presented as a cryptographic attestation.
+## Privacy boundary
 
-## Requested Primus review
+No wallet private key, recovery phrase, Binance password or exchange API key is requested by this application. ProofGate does not accept raw attestation bodies. Ordinary source verification does not request the complete private HTTP response. The optional volume flow can hold it locally for DVC preparation; the explicit downloaded file is sensitive. Primus, its extension, attestors and onchain data have their own disclosure properties.
 
-Please confirm:
+## Review requested from Primus
 
-1. Whether the current Project/App ID may be used for this public community demo.
-2. Whether the two published Binance templates are appropriate for this use case.
-3. Whether ProofGate's server-side task verification and `additionParams` request binding follow the recommended SDK workflow.
-4. Which selective-claim schema is supported before interpreting KYC status or trading volume for any policy decision.
-5. Whether reviewed zkTLS integrations and accepted PRs are tracked in any published Builder/contributor program, separately from XP and Reputation Score.
+1. Confirm the recommended way to associate this Network SDK application with the registered Hub project.
+2. Review the selected templates and exact request-binding/server verification approach.
+3. Confirm the supported whole-response hash template/schema and attestor trust source for DVC.
+4. Point us to the current Builder contribution review or developer incentive application, including required milestones and evidence.
+5. Confirm whether reviewed integrations and accepted upstream PRs are recognized through Community XP, another developer program, or a separate grant process.
 
-This repository does not claim an official partnership, Builder role, token allocation or reward eligibility until Primus confirms it.
+## Incentive interpretation
+
+The [Foundation tokenomics](https://docs.primusfoundation.xyz/docs/tokenomics#allocation-breakdown), retrieved 2026-11-08, describes a Community allocation of 18% supporting developer adoption and community initiatives. This is a budget category, not an award to this project or an application procedure. It also lists Ecosystem and Airdrop & Community Distribution separately. No individual Builder allocation, XP conversion rate, automatic Hub-registration reward, or acceptance for this project is established by that page.
+
+Do not mark recognition or rewards as approved without a published applicable rule or a recorded team decision. We are requesting a technical and program review, not claiming eligibility or an official partnership.

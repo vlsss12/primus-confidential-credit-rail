@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 
 const html = await readFile(resolve(process.cwd(), 'index.html'), 'utf8');
 const adapter = await readFile(resolve(process.cwd(), 'src/primus-network.js'), 'utf8');
+const sdkLoader = await readFile(resolve(process.cwd(), 'src/primus-sdk.js'), 'utf8');
 const dvcLabHtml = await readFile(resolve(process.cwd(), 'dvc-proof-lab.html'), 'utf8');
 const dvcLab = await readFile(resolve(process.cwd(), 'src/dvc-proof-lab.js'), 'utf8');
 const dvcVectors = await readFile(resolve(process.cwd(), 'dvc/test-vectors/credit-gate-v1.json'), 'utf8');
@@ -24,7 +25,7 @@ const required = [
 ];
 
 const missing = required.filter((needle) => {
-  const source = needle === 'runPrimusNetworkProof' ? adapter : `${html}\n${adapter}\n${dvcLabHtml}\n${dvcLab}\n${dvcVectors}`;
+  const source = needle === 'runPrimusNetworkProof' ? adapter : `${html}\n${adapter}\n${sdkLoader}\n${dvcLabHtml}\n${dvcLab}\n${dvcVectors}`;
   return !source.includes(needle);
 });
 if (missing.length) {
@@ -54,7 +55,7 @@ if (foundUnsafeLogging.length) {
   process.exit(1);
 }
 
-const sourceFiles = [html, adapter, dvcLabHtml, dvcLab].join('\n');
+const sourceFiles = [html, adapter, sdkLoader, dvcLabHtml, dvcLab].join('\n');
 const secretPatterns = [
   /PRIMUS_APP_SECRET\s*=\s*[^\s#]/i,
   /(?:private[_ -]?key|seed phrase|mnemonic)\s*[:=]\s*['\"][^'\"]+['\"]/i,

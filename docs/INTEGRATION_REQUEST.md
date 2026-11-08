@@ -1,35 +1,17 @@
-# Primus Integration Request
+# Primus integration review request
 
-## Context
+Draft for the official Builder support channel. This file has not been sent.
 
-Primus Confidential Credit Rail is an independent community prototype for privacy-preserving institutional credit policies. It provides a live UI, a synthetic policy sandbox, and a public BNB ZK ID SDK flow.
+Hi ISA, I have registered Primus Confidential Credit Rail in Developer Hub and built the integration with the official Primus Network SDK. The project includes a Base Sepolia source verifier, wallet and request binding, expiry checks and replay protection. I have also added policy tools and a local DVC implementation, with the remaining live checks documented.
 
-Review packet: [docs/BUILDER_REVIEW.md](./BUILDER_REVIEW.md)
+I reviewed the Developer Hub tutorial and updated the integration, tests and review notes. Since our app uses the Network SDK rather than the Enterprise App ID signing flow, could you confirm how I should link its usage to my Hub project for review?
 
-## Requested guidance
+Could the developer team review the integration and let me know the current process for having it recognized as a Builder contribution? I would also appreciate guidance on any active developer incentive or grant program, the milestones it requires, and how accepted technical contributions are recorded. I saw that the Community allocation supports developer programs, but I understand that it does not automatically qualify an individual project for rewards.
 
-We are looking for the recommended path to:
+The live owner wallet test is still pending, and I have documented the DVC trust and template requirements rather than treating the test fixtures as live proof. The review packet also links my three open contributions to Primus repositories, with their current status clearly shown.
 
-1. Obtain an approved App ID for a community integration.
-2. Select or create a supported Primus data template for an institutional credit claim.
-3. Run the proof flow on the recommended testnet.
-4. Verify the resulting attestation or proof in a minimal policy contract.
-5. Follow any Primus Builder, Developer or Ecosystem review process.
+App: https://primus-credit-rail.vercel.app/
 
-## Proposed first policy
+Code and review packet: https://github.com/vlsss12/primus-confidential-credit-rail/blob/main/docs/BUILDER_REVIEW.md
 
-```text
-30-day trading-volume band >= $1M
-collateral ratio >= 150%
-KYC claim = verified
-```
-
-The application should receive only the policy result. It must not persist API credentials, raw exchange responses, account-level balances or complete trading history.
-
-## Links
-
-- Live demo: https://primus-credit-rail.vercel.app
-- Repository: https://github.com/vlsss12/primus-confidential-credit-rail
-- Primus BNB ZKID SDK: https://github.com/primus-labs/BNB-ZKID-SDK
-- Primus Developer Hub: https://dev.primuslabs.xyz/
-- Builder support context: ask Primus team in the official Discord `builders-help` or an opened support ticket
+Thank you for helping me follow the right process.
