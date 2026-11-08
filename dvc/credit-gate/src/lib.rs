@@ -10,6 +10,8 @@ use serde_json::Value;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 
+pub mod attestor_trust;
+
 const POLICY_SCHEMA: &str = "primus-credit-gate-policy/v1";
 const VOLUME_TEMPLATE_ID: &str = "ad7d29c8-d820-495a-8bf1-02b8f236a1ae";
 const VOLUME_SCALE: u128 = 100_000_000;

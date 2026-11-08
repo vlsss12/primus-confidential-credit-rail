@@ -5,6 +5,7 @@
  * Template IDs are public configuration; app secrets are never stored here.
  */
 import { assertWallet } from './proofgate-protocol.js';
+import { loadPrimusNetworkSdk } from './primus-sdk.js';
 export const BINANCE_SPOT_30D_VOLUME_TEMPLATE_ID =
   'ad7d29c8-d820-495a-8bf1-02b8f236a1ae';
 export const BINANCE_KYC_STATUS_TEMPLATE_ID =
@@ -17,7 +18,7 @@ export async function runPrimusNetworkProof({
   expectedAddress,
   expiresAt,
   onStatus = () => {},
-}, { loadSdk = () => import('@primuslabs/network-js-sdk'), now = () => Math.floor(Date.now() / 1000) } = {}) {
+}, { loadSdk = loadPrimusNetworkSdk, now = () => Math.floor(Date.now() / 1000) } = {}) {
   const checkExpiry = () => {
     if (expiresAt !== undefined && (!Number.isSafeInteger(expiresAt) || now() >= expiresAt)) throw new Error('Request expired. No further proof operation submitted.');
   };

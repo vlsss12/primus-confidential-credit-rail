@@ -4,6 +4,7 @@ sp1_zkvm::entrypoint!(main);
 use anyhow::{anyhow, ensure, Context, Result};
 #[path = "../../credit-gate/src/lib.rs"]
 mod credit_gate;
+use credit_gate::attestor_trust::require_trusted_attestor;
 use credit_gate::{evaluate, EligibilityOutput, VerifiedClaim};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -48,11 +49,17 @@ fn run(attestation_data: &str) -> Result<PublicOutput> {
         .and_then(Value::as_array)
         .context("missing public_data")?;
     ensure!(public_data.len() == 1, "this guest accepts exactly one attestation");
-    let attestor = public_data[0]
+    let claimed_attestor = public_data[0]
         .get("attestor")
         .and_then(Value::as_str)
-        .context("missing attestor")?
-        .to_owned();
+        .context("missing attestor")?;
+    // This value is embedded in the ELF at build time. Missing configuration
+    // rejects every input; never fall back to a signer supplied by the proof.
+    let attestor = require_trusted_attestor(
+        option_env!("PRIMUS_DVC_TRUSTED_ATTESTOR"),
+        claimed_attestor,
+    )
+    .map_err(|error| anyhow!("attestor trust check failed: {error:?}"))?;
     let attestation = &public_data[0]["attestation"];
     let recipient = attestation
         .get("recipient")
